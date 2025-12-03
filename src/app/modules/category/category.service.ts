@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
-import { TCategory } from "./category.interface";
-import { Category } from "./category.model";
+import { TCategory, TSubCategory } from "./category.interface";
+import { Category, SubCategory } from "./category.model";
 
 const createCategoryIntoDB = async (payload: TCategory) => {
   const result = await Category.create(payload);
@@ -9,8 +9,14 @@ const createCategoryIntoDB = async (payload: TCategory) => {
   return result;
 };
 
-const AllCategoriesFromDB = async () => {
-  const result = await Category.find().populate("department");
+const allCategoriesFromDB = async () => {
+  const result = await Category.find();
+
+  return result;
+};
+
+const singleCategoryFromDB = async (id: string) => {
+  const result = await Category.findById(id);
 
   return result;
 };
@@ -33,8 +39,53 @@ const updateCategoryIntoDB = async (
   return result;
 };
 
+// sub category
+
+const createSubCategoryIntoDB = async (payload: TSubCategory) => {
+  const isCategoryExists = await Category.findById(payload?.category);
+
+  if (!isCategoryExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Category not found");
+  }
+  const result = await SubCategory.create(payload);
+
+  return result;
+};
+
+const allSubCategoriesFromDB = async () => {
+  const result = await SubCategory.find().populate("category");
+
+  return result;
+};
+
+const updateSubCategoryIntoDB = async (
+  id: string,
+  payload: Partial<TSubCategory>
+) => {
+  const isSubCategory = await SubCategory.findById(id);
+
+  if (!isSubCategory) {
+    throw new AppError(httpStatus.NOT_FOUND, "SubCategory not found");
+  }
+
+  const result = await SubCategory.findByIdAndUpdate(
+    isSubCategory._id,
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  return result;
+};
+
 export const CategoryServices = {
   createCategoryIntoDB,
-  AllCategoriesFromDB,
+  allCategoriesFromDB,
+  singleCategoryFromDB,
   updateCategoryIntoDB,
+  createSubCategoryIntoDB,
+  allSubCategoriesFromDB,
+  updateSubCategoryIntoDB,
 };

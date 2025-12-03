@@ -2,8 +2,6 @@ node_modules
 dist
 .env
 
-# git remote add origin https://github.com/ronyislam502/e-commerce-server-amarzone.git
+# git remote add origin https://github.com/ronyislam502/Bangla-Today-News-server.git
 .vercel
 
-
-# https://amarzone-server.vercel.app/api/v1/payments/webhook

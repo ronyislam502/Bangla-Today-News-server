@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { TCategory } from "./category.interface";
+import { TCategory, TSubCategory } from "./category.interface";
 
 const CategorySchema = new Schema<TCategory>(
   {
@@ -17,3 +17,29 @@ const CategorySchema = new Schema<TCategory>(
 );
 
 export const Category = model<TCategory>("Category", CategorySchema);
+
+const SubCategorySchema = new Schema<TSubCategory>(
+  {
+    category: {
+      type: Schema.Types.ObjectId,
+      required: [true, "category is required"],
+      unique: true,
+      ref: "Category",
+    },
+    name: {
+      type: String,
+      required: [true, "name is required"],
+      unique: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
+
+export const SubCategory = model<TSubCategory>(
+  "SubCategory",
+  SubCategorySchema
+);
