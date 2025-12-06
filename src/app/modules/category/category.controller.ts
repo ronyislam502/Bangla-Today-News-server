@@ -15,7 +15,7 @@ const createCategory = catchAsync(async (req, res) => {
 });
 
 const allCategories = catchAsync(async (req, res) => {
-  const result = await CategoryServices.AllCategoriesFromDB();
+  const result = await CategoryServices.allCategoriesFromDB();
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -37,8 +37,49 @@ const updateCategory = catchAsync(async (req, res) => {
   });
 });
 
+// sub category
+
+const createSubCategory = catchAsync(async (req, res) => {
+  const result = await CategoryServices.createSubCategoryIntoDB(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "SubCategory created successfully",
+    data: result,
+  });
+});
+
+const allSubCategories = catchAsync(async (req, res) => {
+  const result = await CategoryServices.allSubCategoriesFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "SubCategories retrieved successfully",
+    data: result,
+  });
+});
+
+const updateSubCategory = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CategoryServices.updateSubCategoryIntoDB(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Sub Category updated successfully",
+    data: result,
+  });
+});
+
 export const CategoryControllers = {
   createCategory,
   allCategories,
   updateCategory,
+
+  // sub category
+  createSubCategory,
+  allSubCategories,
+  updateSubCategory,
 };

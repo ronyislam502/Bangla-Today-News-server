@@ -85,6 +85,7 @@ export const CategoryServices = {
   allCategoriesFromDB,
   singleCategoryFromDB,
   updateCategoryIntoDB,
+  // sub category
   createSubCategoryIntoDB,
   allSubCategoriesFromDB,
   updateSubCategoryIntoDB,
