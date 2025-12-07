@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
-import { TDivision } from "./location.interface";
-import { Division } from "./location.model.";
+import { TDistrict, TDivision } from "./location.interface";
+import { District, Division } from "./location.model.";
 
 const createDivisionIntoDB = async (payload: TDivision) => {
   const result = await Division.create(payload);
@@ -35,8 +35,52 @@ const updateDivisionIntoDB = async (
   );
 };
 
+const createDistrictIntoDB = async (payload: TDistrict) => {
+  const isDivisionExists = await Division.findById(payload.division);
+
+  if (!isDivisionExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Division not found");
+  }
+
+  const result = await District.create(payload);
+
+  return result;
+};
+
+const allDistrictsFromDB = async () => {
+  const result = await District.find();
+
+  return result;
+};
+
+const updateDistrictIntoDB = async (
+  id: string,
+  payload: Partial<TDistrict>
+) => {
+  const isDistrict = await District.findById(id).populate("division");
+
+  if (!isDistrict) {
+    throw new AppError(httpStatus.NOT_FOUND, "District not found");
+  }
+  const isDivision = await Division.findById(isDistrict.division);
+
+  if (!isDivision) {
+    throw new AppError(httpStatus.NOT_FOUND, "District not found");
+  }
+
+  const result = await District.findByIdAndUpdate(isDistrict._id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return result;
+};
+
 export const LocationServices = {
   createDivisionIntoDB,
   allDivisionFromDB,
   updateDivisionIntoDB,
+  createDistrictIntoDB,
+  allDistrictsFromDB,
+  updateDistrictIntoDB,
 };
