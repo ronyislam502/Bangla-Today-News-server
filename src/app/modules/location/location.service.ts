@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
-import { TDistrict, TDivision } from "./location.interface";
-import { District, Division } from "./location.model.";
+import { TDistrict, TDivision, TUpaZila } from "./location.interface";
+import { District, Division, UpaZila } from "./location.model.";
 
 const createDivisionIntoDB = async (payload: TDivision) => {
   const result = await Division.create(payload);
@@ -76,6 +76,63 @@ const updateDistrictIntoDB = async (
   return result;
 };
 
+const allDistrictsByDivisionFromDB = async (id: string) => {
+  const isDivision = await Division.findById(id);
+
+  if (!isDivision) {
+    throw new AppError(httpStatus.NOT_FOUND, "Division not found");
+  }
+
+  const result = await Division.find({ division: isDivision._id });
+
+  return result;
+};
+
+const createUpaZilaIntoDB = async (payload: TUpaZila) => {
+  const isDistrict = await District.findById(payload.district);
+
+  if (!isDistrict) {
+    throw new AppError(httpStatus.NOT_FOUND, "This District not found");
+  }
+
+  const isDivision = isDistrict.division;
+
+  if (!isDivision) {
+    throw new AppError(httpStatus.NOT_FOUND, "Division not found");
+  }
+
+  const result = await UpaZila.create(payload);
+
+  return result;
+};
+
+const updateUpZilaIntoDB = async (id: string, payload: Partial<TUpaZila>) => {
+  const isUpazila = await UpaZila.findById(id);
+
+  if (!isUpazila) {
+    throw new AppError(httpStatus.NOT_FOUND, "This upazila not found");
+  }
+
+  const isDistrict = isUpazila.district;
+
+  if (!isDistrict) {
+    throw new AppError(httpStatus.NOT_FOUND, "This District not found");
+  }
+
+  const isDivision = isUpazila.division;
+
+  if (!isDivision) {
+    throw new AppError(httpStatus.NOT_FOUND, "This division not found");
+  }
+
+  const result = await UpaZila.findByIdAndUpdate(isUpazila._id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return result;
+};
+
 export const LocationServices = {
   createDivisionIntoDB,
   allDivisionFromDB,
@@ -83,4 +140,7 @@ export const LocationServices = {
   createDistrictIntoDB,
   allDistrictsFromDB,
   updateDistrictIntoDB,
+  allDistrictsByDivisionFromDB,
+  createUpaZilaIntoDB,
+  updateUpZilaIntoDB,
 };
