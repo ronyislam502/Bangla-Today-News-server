@@ -11,8 +11,18 @@ router.post(
   CategoryControllers.createCategory
 );
 
+router.post(
+  "/create-subcategory",
+  validateRequest(CategoryValidations.createSubCategoryValidationSchema),
+  CategoryControllers.createSubCategory
+);
+
 router.get("/", CategoryControllers.allCategories);
 
+router.get("/", CategoryControllers.allSubCategories);
+
 router.patch("/update/:id", CategoryControllers.updateCategory);
+
+router.patch("/update-sub/:id", CategoryControllers.updateSubCategory);
 
 export const CategoryRoutes = router;

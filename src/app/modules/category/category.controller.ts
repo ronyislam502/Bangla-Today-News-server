@@ -77,7 +77,6 @@ export const CategoryControllers = {
   createCategory,
   allCategories,
   updateCategory,
-
   // sub category
   createSubCategory,
   allSubCategories,

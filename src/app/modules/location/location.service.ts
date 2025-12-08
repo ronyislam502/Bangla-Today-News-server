@@ -133,6 +133,18 @@ const updateUpZilaIntoDB = async (id: string, payload: Partial<TUpaZila>) => {
   return result;
 };
 
+const allUpaZilasByDistrictFromDB = async (id: string) => {
+  const isDistrict = await District.findById(id);
+
+  if (!isDistrict) {
+    throw new AppError(httpStatus.NOT_FOUND, "District not found");
+  }
+
+  const result = await Division.find({ district: isDistrict._id });
+
+  return result;
+};
+
 export const LocationServices = {
   createDivisionIntoDB,
   allDivisionFromDB,
@@ -143,4 +155,5 @@ export const LocationServices = {
   allDistrictsByDivisionFromDB,
   createUpaZilaIntoDB,
   updateUpZilaIntoDB,
+  allUpaZilasByDistrictFromDB,
 };
